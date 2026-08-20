@@ -7,8 +7,11 @@ A RuneLite plugin to add overlays to ZMI runecrafting.
 Runes Crafted after a single inventory.
 
 # Configuration Options
+### ZMI Worlds Only
+Only enable the overlays on the ZMI worlds.
+
 ## Runes Panel
-A panel containing a count of all runes crafted in the session
+A panel containing a count of all runes crafted in the session.
 
 ### Show
 Shows the runes crafted panel.

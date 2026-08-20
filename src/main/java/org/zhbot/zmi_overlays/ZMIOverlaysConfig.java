@@ -12,10 +12,21 @@ public interface ZMIOverlaysConfig extends Config
 {
 	String group = "zmi-overlays";
 
+	@ConfigItem(
+			keyName = "zmiWorldsOnly",
+			name = "ZMI Worlds Only",
+			description = "Only enable overlays on ZMI worlds",
+			position = 0
+	)
+	default boolean ZMIWorldsOnly()
+	{
+		return true;
+	}
+
 	@ConfigSection(
 			name = "Runes Panel",
 			description = "Configure the runes panel",
-			position = 0
+			position = 1
 	)
 	String runesPanelSection = "runesPanelSection";
 
@@ -34,7 +45,7 @@ public interface ZMIOverlaysConfig extends Config
 	@ConfigSection(
 			name = "Altar Overlay",
 			description = "Configure the altar overlay",
-			position = 1
+			position = 2
 	)
 	String altarOverlaySection = "altarOverlaySection";
 
@@ -78,7 +89,7 @@ public interface ZMIOverlaysConfig extends Config
 	@ConfigSection(
 			name = "Entrance Ladder Overlay",
 			description = "Configure the entrance ladder overlay",
-			position = 2
+			position = 3
 	)
 	String entranceLadderOverlaySection = "entranceLadderOverlaySection";
 
@@ -122,7 +133,7 @@ public interface ZMIOverlaysConfig extends Config
 	@ConfigSection(
 			name = "Eniola (Banker) Overlay",
 			description = "Configure the Eniola (banker) overlay",
-			position = 3
+			position = 4
 	)
 	String eniolaOverlaySection = "eniolaOverlaySection";
 
@@ -166,7 +177,7 @@ public interface ZMIOverlaysConfig extends Config
 	@ConfigSection(
 			name = "Enemy Overlay",
 			description = "Configure the enemy overlay",
-			position = 4
+			position = 5
 	)
 	String enemyOverlaySection = "enemyOverlaySection";
 
@@ -210,7 +221,7 @@ public interface ZMIOverlaysConfig extends Config
 	@ConfigSection(
 			name = "Pouch Overlay",
 			description = "Configure the pouch overlay",
-			position = 5
+			position = 6
 	)
 	String pouchOverlaySection = "pouchOverlaySection";
 
@@ -242,7 +253,7 @@ public interface ZMIOverlaysConfig extends Config
 	@ConfigSection(
 			name = "Essence Overlay",
 			description = "Configure the essence overlay",
-			position = 6
+			position = 7
 	)
 	String essenceOverlaySection = "essenceOverlaySection";
 
@@ -274,7 +285,7 @@ public interface ZMIOverlaysConfig extends Config
 	@ConfigSection(
 			name = "Food Overlay",
 			description = "Configure the food overlay",
-			position = 7
+			position = 8
 	)
 	String foodOverlaySection = "foodOverlaySection";
 
@@ -306,7 +317,7 @@ public interface ZMIOverlaysConfig extends Config
 	@ConfigSection(
 			name = "Stamina Overlay",
 			description = "Configure the stamina potion overlay",
-			position = 8
+			position = 9
 	)
 	String staminaOverlaySection = "staminaOverlaySection";
 
@@ -352,7 +363,7 @@ public interface ZMIOverlaysConfig extends Config
 	@ConfigSection(
 			name = "Teleport Overlay",
 			description = "Configure the teleport overlay",
-			position = 9
+			position = 10
 	)
 	String teleportOverlaySection = "teleportOverlaySection";
 

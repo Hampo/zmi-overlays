@@ -4,8 +4,13 @@ import com.google.inject.Provides;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
+import net.runelite.api.GameState;
+import net.runelite.api.WorldType;
+import net.runelite.api.events.GameStateChanged;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.EventBus;
+import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.game.WorldService;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
@@ -33,6 +38,12 @@ public class ZMIOverlaysPlugin extends Plugin
 	private EventBus eventBus;
 
 	@Inject
+	private WorldService worldService;
+
+	@Inject
+	private ZMIOverlaysConfig config;
+
+	@Inject
 	private WorldOverlays worldOverlays;
 
 	@Inject
@@ -43,6 +54,8 @@ public class ZMIOverlaysPlugin extends Plugin
 
 	@Inject
 	private RunesPanel runesPanel;
+
+	private boolean zmiWorld = false;
 
 	@Override
 	protected void startUp() throws Exception
@@ -85,8 +98,30 @@ public class ZMIOverlaysPlugin extends Plugin
 		return configManager.getConfig(ZMIOverlaysConfig.class);
 	}
 
+	@Subscribe
+	public void onGameStateChanged(GameStateChanged event)
+	{
+		if (event.getGameState() != GameState.LOGGED_IN)
+			return;
+
+		zmiWorld = false;
+
+		var worlds = worldService.getWorlds();
+		if (worlds == null)
+			return;
+
+		var world = worlds.findWorld(client.getWorld());
+		if (world == null)
+			return;
+
+		zmiWorld = world.getActivity().equalsIgnoreCase("Ourania Altar");
+	}
+
 	public boolean outsideOuraniaArea()
 	{
+		if (config.ZMIWorldsOnly() && !zmiWorld)
+			return true;
+
 		var localPlayer = client.getLocalPlayer();
 		if (localPlayer == null)
 			return true;
