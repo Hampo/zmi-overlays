@@ -1,5 +1,6 @@
 package org.zhbot.zmi_overlays.overlays;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import net.runelite.api.Client;
 import net.runelite.api.Skill;
@@ -17,6 +18,8 @@ import org.zhbot.zmi_overlays.utils.GraphicsUtils;
 
 import javax.inject.Inject;
 import java.awt.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 public class ItemOverlays extends WidgetItemOverlay {
@@ -26,6 +29,14 @@ public class ItemOverlays extends WidgetItemOverlay {
             ItemID.RCU_POUCH_LARGE,
             ItemID.RCU_POUCH_GIANT,
             ItemID.RCU_POUCH_COLOSSAL
+    );
+
+    private static final Map<Integer, Integer> POUCH_VARBITS = ImmutableMap.of(
+            VarbitID.SMALL_ESSENCE_POUCH, ItemID.RCU_POUCH_SMALL,
+            VarbitID.MEDIUM_ESSENCE_POUCH, ItemID.RCU_POUCH_MEDIUM,
+            VarbitID.LARGE_ESSENCE_POUCH, ItemID.RCU_POUCH_LARGE,
+            VarbitID.GIANT_ESSENCE_POUCH, ItemID.RCU_POUCH_GIANT,
+            VarbitID.COLOSSAL_ESSENCE_POUCH, ItemID.RCU_POUCH_COLOSSAL
     );
 
     private static final Set<Integer> ESSENCE_IDS = ImmutableSet.of(
@@ -52,6 +63,7 @@ public class ItemOverlays extends WidgetItemOverlay {
     private final GraphicsUtils graphicsUtils;
 
     private boolean hasStamina = false;
+    private final Map<Integer, Integer> pouchContents = new HashMap<>();
 
     @Inject
     private ItemOverlays(Client client, ZMIOverlaysPlugin plugin, ZMIOverlaysConfig config, GraphicsUtils graphicsUtils)
@@ -80,7 +92,9 @@ public class ItemOverlays extends WidgetItemOverlay {
             if (interfaceID != InterfaceID.INVENTORY)
                 return;
 
-            graphicsUtils.renderBox(graphics, widgetItem, config.pouchColour());
+            var empty = pouchContents.getOrDefault(itemId, 0) == 0;
+
+            graphicsUtils.renderBox(graphics, widgetItem, empty ? config.pouchEmptyColour() : config.pouchColour());
 
             return;
         }
@@ -129,7 +143,18 @@ public class ItemOverlays extends WidgetItemOverlay {
     @Subscribe
     public void onVarbitChanged(VarbitChanged event)
     {
-        if (event.getVarbitId() == VarbitID.STAMINA_ACTIVE)
+        var id = event.getVarbitId();
+
+        if (id == VarbitID.STAMINA_ACTIVE)
+        {
             hasStamina = event.getValue() != 0;
+            return;
+        }
+
+        var pouchID = POUCH_VARBITS.get(id);
+        if (pouchID == null)
+            return;
+
+        pouchContents.put(pouchID, event.getValue());
     }
 }

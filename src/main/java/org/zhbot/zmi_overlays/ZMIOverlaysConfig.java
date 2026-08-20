@@ -250,6 +250,19 @@ public interface ZMIOverlaysConfig extends Config
 		return new Color(0, 255, 255, 50);
 	}
 
+	@Alpha
+	@ConfigItem(
+			keyName = "pouchEmptyColour",
+			name = "Empty Colour",
+			description = "The overlay colour for empty pouches",
+			section = pouchOverlaySection,
+			position = 2
+	)
+	default Color pouchEmptyColour()
+	{
+		return new Color(255, 0, 0, 50);
+	}
+
 	@ConfigSection(
 			name = "Essence Overlay",
 			description = "Configure the essence overlay",
