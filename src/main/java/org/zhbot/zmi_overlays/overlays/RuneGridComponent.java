@@ -90,7 +90,7 @@ public class RuneGridComponent implements LayoutableRenderableEntity {
         text.setColor(Color.WHITE);
 
         text.setText("Total:");
-        text.setPosition(totalX, totalY + 16);
+        text.setPosition(totalX, totalY + 15);
         text.render(graphics);
 
         text.setText(NumberFormat.getNumberInstance().format(total));
