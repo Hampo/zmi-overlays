@@ -114,7 +114,7 @@ public class RunesPanel extends OverlayPanel {
         panelComponent.setPreferredSize(new Dimension(RuneGridComponent.ICON_SIZE * RuneGridComponent.ICONS_PER_ROW + RuneGridComponent.PADDING_X * 2, 0));
 
         panelComponent.getChildren().add(TitleComponent.builder()
-                .text("Runes Crafted")
+                .text("ZMI Runes Crafted")
                 .color(Color.GREEN)
                 .build());
 
