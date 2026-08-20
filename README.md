@@ -8,6 +8,7 @@ Runes Crafted after a single inventory.
 
 # Configuration Options
 ## Runes Panel
+A panel containing a count of all runes crafted in the session
 
 ### Show
 Shows the runes crafted panel.
