@@ -404,4 +404,17 @@ public interface ZMIOverlaysConfig extends Config
 	{
 		return new Color(0, 255, 0, 50);
 	}
+
+	@Alpha
+	@ConfigItem(
+			keyName = "teleportBadColour",
+			name = "Bad Colour",
+			description = "The overlay colour for the teleport when you still have essence",
+			section = teleportOverlaySection,
+			position = 2
+	)
+	default Color teleportBadColour()
+	{
+		return new Color(255, 0, 0, 50);
+	}
 }

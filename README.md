@@ -126,3 +126,6 @@ Shows the teleport overlay.
 
 ### Colour
 The colour to overlay the teleport.
+
+### Bad Colour
+The colour to overlay the teleport when you still have essence.

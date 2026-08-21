@@ -67,6 +67,7 @@ public class ZMIOverlaysPlugin extends Plugin
 		eventBus.register(itemOverlays);
 
 		overlayManager.add(spellOverlays);
+		eventBus.register(spellOverlays);
 
 		overlayManager.add(runesPanel);
 		eventBus.register(runesPanel);
@@ -87,6 +88,7 @@ public class ZMIOverlaysPlugin extends Plugin
 		eventBus.unregister(itemOverlays);
 
 		overlayManager.remove(spellOverlays);
+		eventBus.unregister(spellOverlays);
 
 		overlayManager.remove(runesPanel);
 		eventBus.unregister(runesPanel);
