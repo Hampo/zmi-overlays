@@ -129,3 +129,9 @@ The colour to overlay the teleport.
 
 ### Bad Colour
 The colour to overlay the teleport when you still have essence.
+
+## Teleport Disable
+Disables the Ourania Altar teleport spell.
+
+### Disable
+Disables the teleport spell when you still have essence.

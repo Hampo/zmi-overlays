@@ -417,4 +417,23 @@ public interface ZMIOverlaysConfig extends Config
 	{
 		return new Color(255, 0, 0, 50);
 	}
+
+	@ConfigSection(
+			name = "Teleport Disable",
+			description = "Configure the teleport disable",
+			position = 11
+	)
+	String teleportDisableSection = "teleportDisableSection";
+
+	@ConfigItem(
+			keyName = "teleportDisable",
+			name = "Disable",
+			description = "Disables the teleport spell when you still have essence",
+			section = teleportDisableSection,
+			position = 0
+	)
+	default boolean teleportDisable()
+	{
+		return true;
+	}
 }

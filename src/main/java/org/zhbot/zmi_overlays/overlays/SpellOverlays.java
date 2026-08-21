@@ -11,6 +11,7 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
+import net.runelite.client.util.Text;
 import org.zhbot.zmi_overlays.ZMIOverlaysConfig;
 import org.zhbot.zmi_overlays.ZMIOverlaysPlugin;
 import org.zhbot.zmi_overlays.enums.Pouch;
@@ -94,6 +95,28 @@ public class SpellOverlays extends Overlay {
             pouchesWithEssence.add(pouch);
         else
             pouchesWithEssence.remove(pouch);
+    }
+
+    @Subscribe
+    public void onMenuEntryAdded(MenuEntryAdded event)
+    {
+        if (!config.teleportDisable())
+            return;
+
+        if (plugin.outsideOuraniaArea())
+            return;
+
+        if (!event.getOption().equalsIgnoreCase("Cast"))
+            return;
+
+        var target = Text.removeTags(event.getTarget());
+        if (!target.equalsIgnoreCase("Ourania Teleport"))
+            return;
+
+        if (!hasEssence())
+            return;
+
+        client.getMenu().removeMenuEntry(event.getMenuEntry());
     }
 
     private boolean hasEssence()
