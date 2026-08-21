@@ -85,6 +85,9 @@ Shows the pouch overlay.
 ### Colour
 The colour to overlay pouches.
 
+### Empty Colour
+The colour to overlay empty pouches.
+
 ## Essence Overlay
 Overlays essence.
 
