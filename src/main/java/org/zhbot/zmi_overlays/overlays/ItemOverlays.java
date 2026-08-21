@@ -1,6 +1,5 @@
 package org.zhbot.zmi_overlays.overlays;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import net.runelite.api.Client;
 import net.runelite.api.Skill;
@@ -14,31 +13,17 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.ui.overlay.WidgetItemOverlay;
 import org.zhbot.zmi_overlays.ZMIOverlaysConfig;
 import org.zhbot.zmi_overlays.ZMIOverlaysPlugin;
+import org.zhbot.zmi_overlays.enums.Pouch;
 import org.zhbot.zmi_overlays.utils.GraphicsUtils;
 
 import javax.inject.Inject;
 import java.awt.*;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 public class ItemOverlays extends WidgetItemOverlay {
-    private static final Set<Integer> POUCH_IDS = ImmutableSet.of(
-            ItemID.RCU_POUCH_SMALL,
-            ItemID.RCU_POUCH_MEDIUM,
-            ItemID.RCU_POUCH_LARGE,
-            ItemID.RCU_POUCH_GIANT,
-            ItemID.RCU_POUCH_COLOSSAL
-    );
-
-    private static final Map<Integer, Integer> POUCH_VARBITS = ImmutableMap.of(
-            VarbitID.SMALL_ESSENCE_POUCH, ItemID.RCU_POUCH_SMALL,
-            VarbitID.MEDIUM_ESSENCE_POUCH, ItemID.RCU_POUCH_MEDIUM,
-            VarbitID.LARGE_ESSENCE_POUCH, ItemID.RCU_POUCH_LARGE,
-            VarbitID.GIANT_ESSENCE_POUCH, ItemID.RCU_POUCH_GIANT,
-            VarbitID.COLOSSAL_ESSENCE_POUCH, ItemID.RCU_POUCH_COLOSSAL
-    );
-
     private static final Set<Integer> ESSENCE_IDS = ImmutableSet.of(
             ItemID.BLANKRUNE_HIGH,
             ItemID.BLANKRUNE_DAEYALT
@@ -63,7 +48,7 @@ public class ItemOverlays extends WidgetItemOverlay {
     private final GraphicsUtils graphicsUtils;
 
     private boolean hasStamina = false;
-    private final Map<Integer, Integer> pouchContents = new HashMap<>();
+    private final Map<Pouch, Integer> pouchContents = new EnumMap<>(Pouch.class);
 
     @Inject
     private ItemOverlays(Client client, ZMIOverlaysPlugin plugin, ZMIOverlaysConfig config, GraphicsUtils graphicsUtils)
@@ -83,7 +68,8 @@ public class ItemOverlays extends WidgetItemOverlay {
         if (plugin.outsideOuraniaArea())
             return;
 
-        if (POUCH_IDS.contains(itemId))
+        var pouch = Pouch.getByItemId(itemId);
+        if (pouch != null)
         {
             if (!config.pouchShow())
                 return;
@@ -92,8 +78,7 @@ public class ItemOverlays extends WidgetItemOverlay {
             if (interfaceID != InterfaceID.INVENTORY)
                 return;
 
-            var empty = pouchContents.getOrDefault(itemId, 0) == 0;
-
+            var empty = pouchContents.getOrDefault(pouch, 0) == 0;
             graphicsUtils.renderBox(graphics, widgetItem, empty ? config.pouchEmptyColour() : config.pouchColour());
 
             return;
@@ -151,10 +136,10 @@ public class ItemOverlays extends WidgetItemOverlay {
             return;
         }
 
-        var pouchID = POUCH_VARBITS.get(id);
-        if (pouchID == null)
+        var pouch = Pouch.getByVarbit(id);
+        if (pouch == null)
             return;
 
-        pouchContents.put(pouchID, event.getValue());
+        pouchContents.put(pouch, event.getValue());
     }
 }
