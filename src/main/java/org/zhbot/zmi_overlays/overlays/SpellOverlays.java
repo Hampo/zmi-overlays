@@ -38,7 +38,8 @@ public class SpellOverlays extends Overlay {
         this.pouchUtils = pouchUtils;
 
         setPosition(OverlayPosition.DYNAMIC);
-        setLayer(OverlayLayer.ABOVE_WIDGETS);
+        setLayer(OverlayLayer.MANUAL);
+        drawAfterInterface(InterfaceID.MAGIC_SPELLBOOK);
     }
 
     @Override
@@ -50,10 +51,9 @@ public class SpellOverlays extends Overlay {
             return null;
 
         var teleportWidget = client.getWidget(InterfaceID.MagicSpellbook.OURANIA_TELEPORT);
-        if (teleportWidget == null || teleportWidget.isHidden())
-            return null;
+        if (teleportWidget != null && !teleportWidget.isHidden())
+            graphicsUtils.renderBox(graphics, teleportWidget, hasEssence() ? config.teleportBadColour() : config.teleportColour());
 
-        graphicsUtils.renderBox(graphics, teleportWidget, hasEssence() ? config.teleportBadColour() : config.teleportColour());
         return null;
     }
 
