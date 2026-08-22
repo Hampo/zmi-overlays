@@ -2,10 +2,10 @@ package org.zhbot.zmi_overlays;
 
 import com.google.inject.Provides;
 import javax.inject.Inject;
+
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
-import net.runelite.api.WorldType;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.EventBus;
@@ -18,6 +18,7 @@ import org.zhbot.zmi_overlays.overlays.ItemOverlays;
 import org.zhbot.zmi_overlays.overlays.RunesPanel;
 import org.zhbot.zmi_overlays.overlays.SpellOverlays;
 import org.zhbot.zmi_overlays.overlays.WorldOverlays;
+import org.zhbot.zmi_overlays.utils.PouchUtils;
 
 @Slf4j
 @PluginDescriptor(
@@ -44,6 +45,9 @@ public class ZMIOverlaysPlugin extends Plugin
 	private ZMIOverlaysConfig config;
 
 	@Inject
+	private PouchUtils pouchUtils;
+
+	@Inject
 	private WorldOverlays worldOverlays;
 
 	@Inject
@@ -60,6 +64,8 @@ public class ZMIOverlaysPlugin extends Plugin
 	@Override
 	protected void startUp() throws Exception
 	{
+		eventBus.register(pouchUtils);
+
 		overlayManager.add(worldOverlays);
 		eventBus.register(worldOverlays);
 
@@ -78,8 +84,11 @@ public class ZMIOverlaysPlugin extends Plugin
 	@Override
 	protected void shutDown() throws Exception
 	{
+		pouchUtils.cleanup();
 		worldOverlays.cleanup();
 		runesPanel.cleanup();
+
+		eventBus.unregister(pouchUtils);
 
 		overlayManager.remove(worldOverlays);
 		eventBus.unregister(worldOverlays);

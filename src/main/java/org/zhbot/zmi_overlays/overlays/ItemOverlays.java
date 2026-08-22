@@ -15,12 +15,10 @@ import org.zhbot.zmi_overlays.ZMIOverlaysConfig;
 import org.zhbot.zmi_overlays.ZMIOverlaysPlugin;
 import org.zhbot.zmi_overlays.enums.Pouch;
 import org.zhbot.zmi_overlays.utils.GraphicsUtils;
+import org.zhbot.zmi_overlays.utils.PouchUtils;
 
 import javax.inject.Inject;
 import java.awt.*;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 public class ItemOverlays extends WidgetItemOverlay {
@@ -46,17 +44,18 @@ public class ItemOverlays extends WidgetItemOverlay {
     private final ZMIOverlaysPlugin plugin;
     private final ZMIOverlaysConfig config;
     private final GraphicsUtils graphicsUtils;
+    private final PouchUtils pouchUtils;
 
     private boolean hasStamina = false;
-    private final Map<Pouch, Integer> pouchContents = new EnumMap<>(Pouch.class);
 
     @Inject
-    private ItemOverlays(Client client, ZMIOverlaysPlugin plugin, ZMIOverlaysConfig config, GraphicsUtils graphicsUtils)
+    private ItemOverlays(Client client, ZMIOverlaysPlugin plugin, ZMIOverlaysConfig config, GraphicsUtils graphicsUtils, PouchUtils pouchUtils)
     {
         this.client = client;
         this.plugin = plugin;
         this.config = config;
         this.graphicsUtils = graphicsUtils;
+        this.pouchUtils = pouchUtils;
 
         showOnBank();
         showOnInventory();
@@ -78,7 +77,7 @@ public class ItemOverlays extends WidgetItemOverlay {
             if (interfaceID != InterfaceID.INVENTORY)
                 return;
 
-            var empty = pouchContents.getOrDefault(pouch, 0) == 0;
+            var empty = pouchUtils.getPouchContents(pouch) == 0;
             graphicsUtils.renderBox(graphics, widgetItem, empty ? config.pouchEmptyColour() : config.pouchColour());
 
             return;
@@ -128,18 +127,9 @@ public class ItemOverlays extends WidgetItemOverlay {
     @Subscribe
     public void onVarbitChanged(VarbitChanged event)
     {
-        var id = event.getVarbitId();
-
-        if (id == VarbitID.STAMINA_ACTIVE)
-        {
-            hasStamina = event.getValue() != 0;
-            return;
-        }
-
-        var pouch = Pouch.getByVarbit(id);
-        if (pouch == null)
+        if (event.getVarbitId() != VarbitID.STAMINA_ACTIVE)
             return;
 
-        pouchContents.put(pouch, event.getValue());
+        hasStamina = event.getValue() != 0;
     }
 }
