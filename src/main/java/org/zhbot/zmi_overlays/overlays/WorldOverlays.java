@@ -103,6 +103,9 @@ public class WorldOverlays extends Overlay {
 
                     for (var object : gameObjects)
                     {
+                        if (object == null)
+                            continue;
+
                         switch (object.getId())
                         {
                             case ObjectID.RC_ZMI_DUNGEON_CRACKED_CENTER_ALTAR:
