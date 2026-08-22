@@ -5,8 +5,8 @@ import javax.inject.Inject;
 
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
-import net.runelite.api.GameState;
-import net.runelite.api.events.GameStateChanged;
+import net.runelite.api.events.GameTick;
+import net.runelite.api.events.WorldChanged;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
@@ -60,6 +60,7 @@ public class ZMIOverlaysPlugin extends Plugin
 	private RunesPanel runesPanel;
 
 	private boolean zmiWorld = false;
+	private boolean inOuraniaArea = false;
 
 	@Override
 	protected void startUp() throws Exception
@@ -110,11 +111,8 @@ public class ZMIOverlaysPlugin extends Plugin
 	}
 
 	@Subscribe
-	public void onGameStateChanged(GameStateChanged event)
+	public void onWorldChanged(WorldChanged event)
 	{
-		if (event.getGameState() != GameState.LOGGED_IN)
-			return;
-
 		zmiWorld = false;
 
 		var worlds = worldService.getWorlds();
@@ -128,17 +126,23 @@ public class ZMIOverlaysPlugin extends Plugin
 		zmiWorld = world.getActivity().equalsIgnoreCase("Ourania Altar");
 	}
 
-	public boolean outsideOuraniaArea()
+	@Subscribe
+	public void onGameTick(GameTick event)
 	{
-		if (config.ZMIWorldsOnly() && !zmiWorld)
-			return true;
-
 		var localPlayer = client.getLocalPlayer();
 		if (localPlayer == null)
-			return true;
+		{
+			inOuraniaArea = false;
+			return;
+		}
 
 		var regionID = localPlayer.getWorldLocation().getRegionID();
 
-		return regionID != OURANIA_CAVE_REGION_ID && regionID != OURANIA_SURFACE_REGION_ID;
+		inOuraniaArea = regionID == OURANIA_CAVE_REGION_ID || regionID == OURANIA_SURFACE_REGION_ID;
+	}
+
+	public boolean outsideOuraniaArea()
+	{
+		return (config.ZMIWorldsOnly() && !zmiWorld) || !inOuraniaArea;
 	}
 }
