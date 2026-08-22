@@ -63,7 +63,7 @@ public class PouchUtils {
         }
         else if (id == pouch.amountVarbitId)
         {
-            pouchContents.put(pouch, event.getValue());
+            pouchContents.put(pouch, value);
         }
     }
 
