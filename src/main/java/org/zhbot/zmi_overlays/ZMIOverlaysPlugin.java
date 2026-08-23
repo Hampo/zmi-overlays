@@ -6,7 +6,9 @@ import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.events.GameTick;
+import net.runelite.api.events.PostMenuSort;
 import net.runelite.api.events.WorldChanged;
+import net.runelite.api.gameval.InterfaceID;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
@@ -14,11 +16,15 @@ import net.runelite.client.game.WorldService;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
+import net.runelite.client.util.Text;
+import org.zhbot.zmi_overlays.enums.Pouch;
 import org.zhbot.zmi_overlays.overlays.ItemOverlays;
 import org.zhbot.zmi_overlays.overlays.Infobox;
 import org.zhbot.zmi_overlays.overlays.SpellOverlays;
 import org.zhbot.zmi_overlays.overlays.WorldOverlays;
 import org.zhbot.zmi_overlays.utils.PouchUtils;
+
+import java.util.Set;
 
 @Slf4j
 @PluginDescriptor(
@@ -141,8 +147,52 @@ public class ZMIOverlaysPlugin extends Plugin
 		inOuraniaArea = regionID == OURANIA_CAVE_REGION_ID || regionID == OURANIA_SURFACE_REGION_ID;
 	}
 
+	@Subscribe
+	public void onPostMenuSort(PostMenuSort event)
+	{
+		var menu = client.getMenu();
+
+		var entries = menu.getMenuEntries();
+		for (var entry : entries)
+		{
+			var target = Text.removeTags(entry.getTarget());
+			var pouch = Pouch.getByName(target);
+			if (pouch == null)
+				continue;
+
+			var option = Text.removeTags(entry.getOption());
+			switch (option)
+			{
+				case "Empty":
+					if (!isBankOpen())
+						continue;
+				case "Empty-to-inventory":
+					if (!config.emptyDisable())
+						continue;
+
+					menu.removeMenuEntry(entry);
+					break;
+				case "Fill":
+					if (!config.fillDisable())
+						continue;
+
+					if (isBankOpen())
+						continue;
+
+					menu.removeMenuEntry(entry);
+					break;
+			}
+		}
+	}
+
 	public boolean outsideOuraniaArea()
 	{
 		return (config.ZMIWorldsOnly() && !zmiWorld) || !inOuraniaArea;
+	}
+
+	private boolean isBankOpen()
+	{
+		var bank = client.getWidget(InterfaceID.Bankmain.UNIVERSE);
+		return bank != null && !bank.isHidden();
 	}
 }

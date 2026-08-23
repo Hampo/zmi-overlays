@@ -479,20 +479,44 @@ public interface ZMIOverlaysConfig extends Config
 	}
 
 	@ConfigSection(
-			name = "Teleport Disable",
-			description = "Configure the teleport disable",
+			name = "Menu Entry Removal",
+			description = "Configure menu entry removals",
 			position = 11
 	)
-	String teleportDisableSection = "teleportDisableSection";
+	String menuEntryRemovalSection = "menuEntryRemovalSection";
 
 	@ConfigItem(
 			keyName = "teleportDisable",
-			name = "Disable",
-			description = "Disables the teleport spell when you still have essence",
-			section = teleportDisableSection,
+			name = "Remove Cast Teleport",
+			description = "Disables the Ourania Teleport spell when you still have essence",
+			section = menuEntryRemovalSection,
 			position = 0
 	)
 	default boolean teleportDisable()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+			keyName = "fillDisable",
+			name = "Remove Fill",
+			description = "Disables filling an essence pouch when not in a bank",
+			section = menuEntryRemovalSection,
+			position = 1
+	)
+	default boolean fillDisable()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+			keyName = "emptyDisable",
+			name = "Remove Empty",
+			description = "Disables emptying an essence pouch when in a bank",
+			section = menuEntryRemovalSection,
+			position = 2
+	)
+	default boolean emptyDisable()
 	{
 		return true;
 	}

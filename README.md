@@ -150,8 +150,14 @@ The colour to overlay the teleport.
 ### Bad Colour
 The colour to overlay the teleport when you still have essence.
 
-## Teleport Disable
-Disables the Ourania Altar teleport spell.
+## Menu Entry Removal
+Removes certain menu entries.
 
-### Disable
-Disables the teleport spell when you still have essence.
+### Remove Cast Teleport
+Disables the Ourania Teleport spell when you still have essence.
+
+### Remove Fill
+Disables filling an essence pouch when not in a bank.
+
+### Remove Empty
+Disables emptying an essence pouch when in a bank.

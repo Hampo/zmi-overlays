@@ -5,6 +5,7 @@ import net.runelite.api.events.VarbitChanged;
 import net.runelite.api.gameval.InventoryID;
 import net.runelite.client.eventbus.Subscribe;
 import org.zhbot.zmi_overlays.enums.Pouch;
+import org.zhbot.zmi_overlays.enums.PouchType;
 
 import javax.inject.Singleton;
 import java.util.EnumMap;
@@ -14,10 +15,8 @@ import java.util.Set;
 
 @Singleton
 public class PouchUtils {
-    private static final int POUCH_TYPE_PURE = 2;
-    private static final int POUCH_TYPE_DAEYALT = 3;
-
     private final Map<Pouch, Integer> pouchContents = new EnumMap<>(Pouch.class);
+    private final Map<Pouch, PouchType> pouchTypes = new EnumMap<>(Pouch.class);
 
     private final Set<Pouch> pouchesInInventory = EnumSet.noneOf(Pouch.class);
     private final Set<Pouch> pouchesWithEssence = EnumSet.noneOf(Pouch.class);
@@ -56,7 +55,10 @@ public class PouchUtils {
 
         if (id == pouch.typeVarbitId)
         {
-            if (value == POUCH_TYPE_PURE || value == POUCH_TYPE_DAEYALT)
+            var type = PouchType.values()[value];
+            pouchTypes.put(pouch, type);
+
+            if (type == PouchType.PURE || type == PouchType.DAEYALT)
                 pouchesWithEssence.add(pouch);
             else
                 pouchesWithEssence.remove(pouch);
@@ -79,5 +81,10 @@ public class PouchUtils {
     public int getPouchContents(Pouch pouch)
     {
         return pouchContents.getOrDefault(pouch, 0);
+    }
+
+    public PouchType getPouchType(Pouch pouch)
+    {
+        return pouchTypes.getOrDefault(pouch, PouchType.EMPTY);
     }
 }
