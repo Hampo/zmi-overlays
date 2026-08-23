@@ -6,11 +6,11 @@ A RuneLite plugin to add overlays to ZMI runecrafting.
 
 Infobox after a single inventory.
 
-![Infobox after completing five laps](img/screenshot1.png)
+![Infobox after completing five laps](img/screenshot2.png)
 
 Infobox after completing five laps.
 
-![Infobox Shift+Right Click menu](img/screenshot1.png)
+![Infobox Shift+Right Click menu](img/screenshot3.png)
 
 Infobox Shift+Right Click menu.
 
