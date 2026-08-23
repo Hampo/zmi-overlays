@@ -24,18 +24,78 @@ public interface ZMIOverlaysConfig extends Config
 	}
 
 	@ConfigSection(
-			name = "Runes Panel",
-			description = "Configure the runes panel",
+			name = "Infobox",
+			description = "Configure the infobox",
 			position = 1
 	)
-	String runesPanelSection = "runesPanelSection";
+	String infoboxSection = "infoboxSection";
+
+	@ConfigItem(
+			keyName = "infoboxEnabled",
+			name = "Enabled",
+			description = "Enable the infobox",
+			section = infoboxSection,
+			position = 0
+	)
+	default boolean infoboxEnabled()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+			keyName = "infoboxShowCurrentLap",
+			name = "Show Current Lap",
+			description = "Show the elapsed time of the current lap",
+			section = infoboxSection,
+			position = 1
+	)
+	default boolean infoboxShowCurrentLap()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+			keyName = "infoboxShowPreviousLap",
+			name = "Show Previous Lap",
+			description = "Show the time of the previous lap",
+			section = infoboxSection,
+			position = 2
+	)
+	default boolean infoboxShowPreviousLap()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+			keyName = "infoboxShowAverageLap",
+			name = "Show Average Lap",
+			description = "Show the average time of all previous laps",
+			section = infoboxSection,
+			position = 3
+	)
+	default boolean infoboxShowAverageLap()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+			keyName = "infoboxShowTotalLaps",
+			name = "Show Total laps",
+			description = "Show the total lap count",
+			section = infoboxSection,
+			position = 4
+	)
+	default boolean infoboxShowTotalLaps()
+	{
+		return true;
+	}
 
 	@ConfigItem(
 			keyName = "runesPanelShow",
-			name = "Show",
+			name = "Show Runes Crafted",
 			description = "Show the runes panel",
-			section = runesPanelSection,
-			position = 0
+			section = infoboxSection,
+			position = 5
 	)
 	default boolean runesPanelShow()
 	{

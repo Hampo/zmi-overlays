@@ -1,13 +1,12 @@
 package org.zhbot.zmi_overlays.overlays;
 
 import com.google.common.collect.ImmutableSet;
-import net.runelite.api.Client;
-import net.runelite.api.EnumID;
-import net.runelite.api.GameState;
-import net.runelite.api.Skill;
+import net.runelite.api.*;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.StatChanged;
+import net.runelite.api.events.WidgetClosed;
+import net.runelite.api.gameval.InterfaceID;
 import net.runelite.api.gameval.InventoryID;
 import net.runelite.api.gameval.ItemID;
 import net.runelite.api.gameval.VarbitID;
@@ -15,18 +14,17 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.ui.overlay.OverlayPanel;
 import net.runelite.client.ui.overlay.OverlayPosition;
+import net.runelite.client.ui.overlay.components.LineComponent;
 import net.runelite.client.ui.overlay.components.TitleComponent;
 import org.zhbot.zmi_overlays.ZMIOverlaysConfig;
 import org.zhbot.zmi_overlays.ZMIOverlaysPlugin;
 
 import javax.inject.Inject;
+import java.util.List;
 import java.awt.*;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-public class RunesPanel extends OverlayPanel {
+public class Infobox extends OverlayPanel {
     private static final Integer[] RUNE_IDS_ARRAY = {
             ItemID.AIRRUNE,
             ItemID.MINDRUNE,
@@ -74,8 +72,11 @@ public class RunesPanel extends OverlayPanel {
     private boolean craftedThisTick = false;
     private boolean justHopped = false;
 
+    private long lapStartTime = -1;
+    private final List<Long> lapTimes = new ArrayList<>();
+
     @Inject
-    private RunesPanel(Client client, ItemManager itemManager, ZMIOverlaysPlugin plugin, ZMIOverlaysConfig config)
+    private Infobox(Client client, ItemManager itemManager, ZMIOverlaysPlugin plugin, ZMIOverlaysConfig config)
     {
         this.client = client;
         this.itemManager = itemManager;
@@ -87,6 +88,22 @@ public class RunesPanel extends OverlayPanel {
 
         for (var runeID : RUNE_IDS_ARRAY)
             sessionRunes.put(runeID, 0);
+
+        addMenuEntry(MenuAction.RUNELITE_OVERLAY, "Reset", "Lap Times", (entry) ->
+        {
+            lapStartTime = -1;
+            lapTimes.clear();
+
+            client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "<col=ff0000>[ZMI Overlays] Reset lap times.</col>", null);
+        });
+
+        addMenuEntry(MenuAction.RUNELITE_OVERLAY, "Reset", "Runes", (entry) ->
+        {
+            for (var runeID : RUNE_IDS_ARRAY)
+                sessionRunes.put(runeID, 0);
+
+            client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "<col=ff0000>[ZMI Overlays] Reset runes.</col>", null);
+        });
     }
 
     public void cleanup()
@@ -97,28 +114,74 @@ public class RunesPanel extends OverlayPanel {
 
     @Override
     public Dimension render(Graphics2D graphics) {
-        if (!config.runesPanelShow())
+        if (!config.infoboxEnabled())
             return null;
 
         if (plugin.outsideOuraniaArea())
             return null;
 
-        if (sessionRunes.isEmpty())
-            return null;
-
-        if (sessionRunes.values().stream().allMatch(amount -> amount == 0))
-            return null;
-
         panelComponent.getChildren().clear();
-
         panelComponent.setPreferredSize(new Dimension(RuneGridComponent.ICON_SIZE * RuneGridComponent.ICONS_PER_ROW + RuneGridComponent.PADDING_X * 2, 0));
 
         panelComponent.getChildren().add(TitleComponent.builder()
-                .text("ZMI Runes Crafted")
+                .text("ZMI")
                 .color(Color.GREEN)
                 .build());
 
-        panelComponent.getChildren().add(new RuneGridComponent(itemManager, sessionRunes));
+        if (config.infoboxShowCurrentLap())
+        {
+            panelComponent.getChildren().add(LineComponent.builder()
+                    .left("Current Lap")
+                    .right(lapStartTime == -1 ? "-" : String.valueOf(((System.currentTimeMillis() - lapStartTime) / 1000)))
+                    .build());
+        }
+
+        if (config.infoboxShowPreviousLap())
+        {
+            panelComponent.getChildren().add(LineComponent.builder()
+                    .left("Previous Lap")
+                    .right(lapTimes.isEmpty() ? "-" : String.format("%.3f", (lapTimes.get(lapTimes.size() - 1) / 1000.0)))
+                    .build());
+        }
+
+        if (config.infoboxShowAverageLap())
+        {
+            var average = "-";
+
+            if (!lapTimes.isEmpty())
+            {
+                var total = 0L;
+
+                for (var lapTime : lapTimes)
+                    total += lapTime;
+
+                average = String.format("%.3f", (total / (double)lapTimes.size()) / 1000.0);
+            }
+
+            panelComponent.getChildren().add(LineComponent.builder()
+                    .left("Average Lap")
+                    .right(average)
+                    .build());
+        }
+
+        if (config.infoboxShowTotalLaps())
+        {
+            panelComponent.getChildren().add(LineComponent.builder()
+                    .left("Total Laps")
+                    .right(String.valueOf(lapTimes.size()))
+                    .build());
+        }
+
+        if (config.runesPanelShow())
+        {
+
+            panelComponent.getChildren().add(TitleComponent.builder()
+                    .text("Runes Crafted")
+                    .color(Color.GREEN)
+                    .build());
+
+            panelComponent.getChildren().add(new RuneGridComponent(itemManager, sessionRunes));
+        }
 
         return super.render(graphics);
     }
@@ -145,7 +208,10 @@ public class RunesPanel extends OverlayPanel {
     public void onGameTick(GameTick event)
     {
         if (plugin.outsideOuraniaArea())
+        {
+            lapStartTime = -1;
             return;
+        }
 
         var currentState = getCurrentRuneState();
 
@@ -175,6 +241,29 @@ public class RunesPanel extends OverlayPanel {
         }
 
         previousRuneState = currentState;
+    }
+
+    @Subscribe
+    public void onWidgetClosed(WidgetClosed event)
+    {
+        if (plugin.outsideOuraniaArea())
+            return;
+
+        if (event.getGroupId() != InterfaceID.BANKMAIN)
+            return;
+
+        if (lapStartTime == -1)
+        {
+            lapStartTime = System.currentTimeMillis();
+        }
+        else
+        {
+            var now = System.currentTimeMillis();
+            var lapTime = now - lapStartTime;
+
+            lapTimes.add(lapTime);
+            lapStartTime = now;
+        }
     }
 
     private Map<Integer, Integer> getCurrentRuneState()

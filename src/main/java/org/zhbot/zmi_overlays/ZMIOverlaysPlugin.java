@@ -15,7 +15,7 @@ import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
 import org.zhbot.zmi_overlays.overlays.ItemOverlays;
-import org.zhbot.zmi_overlays.overlays.RunesPanel;
+import org.zhbot.zmi_overlays.overlays.Infobox;
 import org.zhbot.zmi_overlays.overlays.SpellOverlays;
 import org.zhbot.zmi_overlays.overlays.WorldOverlays;
 import org.zhbot.zmi_overlays.utils.PouchUtils;
@@ -57,7 +57,7 @@ public class ZMIOverlaysPlugin extends Plugin
 	private SpellOverlays spellOverlays;
 
 	@Inject
-	private RunesPanel runesPanel;
+	private Infobox infobox;
 
 	private boolean zmiWorld = false;
 	private boolean inOuraniaArea = false;
@@ -76,8 +76,8 @@ public class ZMIOverlaysPlugin extends Plugin
 		overlayManager.add(spellOverlays);
 		eventBus.register(spellOverlays);
 
-		overlayManager.add(runesPanel);
-		eventBus.register(runesPanel);
+		overlayManager.add(infobox);
+		eventBus.register(infobox);
 
 		worldOverlays.startup();
 	}
@@ -87,7 +87,7 @@ public class ZMIOverlaysPlugin extends Plugin
 	{
 		pouchUtils.cleanup();
 		worldOverlays.cleanup();
-		runesPanel.cleanup();
+		infobox.cleanup();
 
 		eventBus.unregister(pouchUtils);
 
@@ -100,8 +100,8 @@ public class ZMIOverlaysPlugin extends Plugin
 		overlayManager.remove(spellOverlays);
 		eventBus.unregister(spellOverlays);
 
-		overlayManager.remove(runesPanel);
-		eventBus.unregister(runesPanel);
+		overlayManager.remove(infobox);
+		eventBus.unregister(infobox);
 	}
 
 	@Provides

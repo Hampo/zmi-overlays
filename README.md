@@ -2,19 +2,39 @@
 A RuneLite plugin to add overlays to ZMI runecrafting.
 
 # Screenshots
-![Runes Crafted after a single inventory](img/screenshot1.png)
+![Infobox after a single inventory](img/screenshot1.png)
 
-Runes Crafted after a single inventory.
+Infobox after a single inventory.
+
+![Infobox after completing five laps](img/screenshot1.png)
+
+Infobox after completing five laps.
+
+![Infobox Shift+Right Click menu](img/screenshot1.png)
+
+Infobox Shift+Right Click menu.
 
 # Configuration Options
 ### ZMI Worlds Only
 Only enable the overlays on the ZMI worlds.
 
-## Runes Panel
-A panel containing a count of all runes crafted in the session.
+## Infobox
+An infobox panel containing lap times and runes crafted in the session.
 
-### Show
-Shows the runes crafted panel.
+### Show Current Lap
+Shows the current lap time.
+
+### Show Previous Lap
+Shows the previous lap time.
+
+### Show Average Lap
+Shows the average lap time.
+
+### Show Total Laps
+Shows the total lap count.
+
+### Show Runes Crafted
+Shows the runes crafted.
 
 ## Altar Overlay
 Overlays the ZMI altar.
