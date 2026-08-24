@@ -86,9 +86,6 @@ public class Infobox extends OverlayPanel {
         setPosition(OverlayPosition.TOP_LEFT);
         setResizable(false);
 
-        for (var runeID : RUNE_IDS_ARRAY)
-            sessionRunes.put(runeID, 0);
-
         addMenuEntry(MenuAction.RUNELITE_OVERLAY, "Reset", "Lap Times", (entry) ->
         {
             lapStartTime = -1;
@@ -104,6 +101,12 @@ public class Infobox extends OverlayPanel {
 
             client.addChatMessage(ChatMessageType.GAMEMESSAGE, "", "<col=ff0000>[ZMI Overlays] Reset runes.</col>", null);
         });
+    }
+
+    public void startup()
+    {
+        for (var runeID : RUNE_IDS_ARRAY)
+            sessionRunes.put(runeID, 0);
     }
 
     public void cleanup()

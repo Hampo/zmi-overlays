@@ -88,6 +88,7 @@ public class ZMIOverlaysPlugin extends Plugin
 		eventBus.register(infobox);
 
 		worldOverlays.startup();
+		infobox.startup();
 
 		clientThread.invoke(this::checkZMIWorld);
 	}
