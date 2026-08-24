@@ -9,6 +9,7 @@ import net.runelite.api.events.GameTick;
 import net.runelite.api.events.PostMenuSort;
 import net.runelite.api.events.WorldChanged;
 import net.runelite.api.gameval.InterfaceID;
+import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
@@ -35,6 +36,9 @@ public class ZMIOverlaysPlugin extends Plugin
 
 	@Inject
 	private Client client;
+
+	@Inject
+	private ClientThread clientThread;
 
 	@Inject
 	private OverlayManager overlayManager;
@@ -84,6 +88,8 @@ public class ZMIOverlaysPlugin extends Plugin
 		eventBus.register(infobox);
 
 		worldOverlays.startup();
+
+		clientThread.invoke(this::checkZMIWorld);
 	}
 
 	@Override
@@ -117,17 +123,7 @@ public class ZMIOverlaysPlugin extends Plugin
 	@Subscribe
 	public void onWorldChanged(WorldChanged event)
 	{
-		zmiWorld = false;
-
-		var worlds = worldService.getWorlds();
-		if (worlds == null)
-			return;
-
-		var world = worlds.findWorld(client.getWorld());
-		if (world == null)
-			return;
-
-		zmiWorld = world.getActivity().equalsIgnoreCase("Ourania Altar");
+		checkZMIWorld();
 	}
 
 	@Subscribe
@@ -192,5 +188,20 @@ public class ZMIOverlaysPlugin extends Plugin
 	{
 		var bank = client.getWidget(InterfaceID.Bankmain.UNIVERSE);
 		return bank != null && !bank.isHidden();
+	}
+
+	private void checkZMIWorld()
+	{
+		zmiWorld = false;
+
+		var worlds = worldService.getWorlds();
+		if (worlds == null)
+			return;
+
+		var world = worlds.findWorld(client.getWorld());
+		if (world == null)
+			return;
+
+		zmiWorld = world.getActivity().equalsIgnoreCase("Ourania Altar");
 	}
 }
