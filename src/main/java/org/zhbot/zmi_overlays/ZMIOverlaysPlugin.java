@@ -24,8 +24,6 @@ import org.zhbot.zmi_overlays.overlays.SpellOverlays;
 import org.zhbot.zmi_overlays.overlays.WorldOverlays;
 import org.zhbot.zmi_overlays.utils.PouchUtils;
 
-import java.util.Set;
-
 @Slf4j
 @PluginDescriptor(
 	name = "ZMI Overlays"

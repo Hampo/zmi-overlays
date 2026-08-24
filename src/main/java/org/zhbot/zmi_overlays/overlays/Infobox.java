@@ -200,8 +200,16 @@ public class Infobox extends OverlayPanel {
 
     @Subscribe
     public void onGameStateChanged(GameStateChanged event) {
-        if (event.getGameState() == GameState.LOGGED_IN || event.getGameState() == GameState.HOPPING)
-            justHopped = true;
+        switch (event.getGameState())
+        {
+            case LOGGED_IN:
+            case HOPPING:
+                justHopped = true;
+                break;
+            case LOGIN_SCREEN:
+                lapStartTime = -1;
+                break;
+        }
     }
 
     @Subscribe
