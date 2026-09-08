@@ -91,11 +91,23 @@ public interface ZMIOverlaysConfig extends Config
 	}
 
 	@ConfigItem(
+			keyName = "maxLapTime",
+			name = "Max Lap Time",
+			description = "Max seconds before a lap is invalidated",
+			section = infoboxSection,
+			position = 5
+	)
+	default int maxLapTime()
+	{
+		return 120;
+	}
+
+	@ConfigItem(
 			keyName = "runesPanelShow",
 			name = "Show Runes Crafted",
 			description = "Show the runes panel",
 			section = infoboxSection,
-			position = 5
+			position = 6
 	)
 	default boolean runesPanelShow()
 	{

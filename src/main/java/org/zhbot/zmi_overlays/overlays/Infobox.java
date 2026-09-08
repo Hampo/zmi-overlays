@@ -133,9 +133,10 @@ public class Infobox extends OverlayPanel {
 
         if (config.infoboxShowCurrentLap())
         {
+            var currentLapTime = currentLapTime();
             panelComponent.getChildren().add(LineComponent.builder()
                     .left("Current Lap")
-                    .right(lapStartTime == -1 ? "-" : String.valueOf(((System.currentTimeMillis() - lapStartTime) / 1000)))
+                    .right(currentLapTime == -1 ? "-" : String.valueOf(currentLapTime))
                     .build());
         }
 
@@ -224,6 +225,9 @@ public class Infobox extends OverlayPanel {
             return;
         }
 
+        if (currentLapTime() > config.maxLapTime())
+            lapStartTime = -1;
+
         var currentState = getCurrentRuneState();
 
         if (justHopped) {
@@ -272,6 +276,9 @@ public class Infobox extends OverlayPanel {
             var now = System.currentTimeMillis();
             var lapTime = now - lapStartTime;
 
+            if (now <= 25000)
+                return;
+
             lapTimes.add(lapTime);
             lapStartTime = now;
         }
@@ -308,5 +315,10 @@ public class Infobox extends OverlayPanel {
         }
 
         return state;
+    }
+
+    private int currentLapTime()
+    {
+        return lapStartTime == -1 ? -1 : (int)((System.currentTimeMillis() - lapStartTime) / 1000);
     }
 }
