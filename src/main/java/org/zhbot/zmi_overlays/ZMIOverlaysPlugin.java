@@ -145,6 +145,9 @@ public class ZMIOverlaysPlugin extends Plugin
 	@Subscribe
 	public void onPostMenuSort(PostMenuSort event)
 	{
+		if (outsideOuraniaArea())
+			return;
+
 		var menu = client.getMenu();
 
 		var entries = menu.getMenuEntries();
