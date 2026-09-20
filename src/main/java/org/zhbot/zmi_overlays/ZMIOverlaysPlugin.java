@@ -6,6 +6,7 @@ import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.events.GameTick;
+import net.runelite.api.events.MenuEntryAdded;
 import net.runelite.api.events.PostMenuSort;
 import net.runelite.api.events.WorldChanged;
 import net.runelite.api.gameval.InterfaceID;
@@ -19,6 +20,7 @@ import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.Text;
 import org.zhbot.zmi_overlays.enums.Pouch;
+import org.zhbot.zmi_overlays.enums.Rune;
 import org.zhbot.zmi_overlays.overlays.ItemOverlays;
 import org.zhbot.zmi_overlays.overlays.Infobox;
 import org.zhbot.zmi_overlays.overlays.SpellOverlays;
@@ -185,6 +187,27 @@ public class ZMIOverlaysPlugin extends Plugin
 					break;
 			}
 		}
+	}
+
+	@Subscribe
+	public void onMenuEntryAdded(MenuEntryAdded event)
+	{
+		if (outsideOuraniaArea())
+			return;
+
+		var option = textUtils.Clean(event.getOption());
+		if (!option.equals("Choose"))
+			return;
+
+		var target = textUtils.Clean(event.getTarget());
+		var rune = Rune.getByName(target);
+		if (rune == null)
+			return;
+
+		if (!config.chooseRuneDisable().contains(rune))
+			return;
+
+		client.getMenu().removeMenuEntry(event.getMenuEntry());
 	}
 
 	public boolean outsideOuraniaArea()

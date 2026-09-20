@@ -4,8 +4,11 @@ import net.runelite.client.config.*;
 import org.zhbot.zmi_overlays.enums.Food;
 import org.zhbot.zmi_overlays.enums.NPCRenderMode;
 import org.zhbot.zmi_overlays.enums.ObjectRenderMode;
+import org.zhbot.zmi_overlays.enums.Rune;
 
 import java.awt.*;
+import java.util.EnumSet;
+import java.util.Set;
 
 @ConfigGroup(ZMIOverlaysConfig.group)
 public interface ZMIOverlaysConfig extends Config
@@ -531,5 +534,17 @@ public interface ZMIOverlaysConfig extends Config
 	default boolean emptyDisable()
 	{
 		return true;
+	}
+
+	@ConfigItem(
+			keyName = "chooseRuneDisable",
+			name = "Remove Choose",
+			description = "Removes the ability to choose the selected runes as payment for Eniola",
+			section = menuEntryRemovalSection,
+			position = 3
+	)
+	default Set<Rune> chooseRuneDisable()
+	{
+		return EnumSet.noneOf(Rune.class);
 	}
 }

@@ -161,3 +161,6 @@ Disables filling an essence pouch when not in a bank.
 
 ### Remove Empty
 Disables emptying an essence pouch when in a bank.
+
+### Remove Choose
+Removes the ability to choose the selected runes as payment for Eniola.
