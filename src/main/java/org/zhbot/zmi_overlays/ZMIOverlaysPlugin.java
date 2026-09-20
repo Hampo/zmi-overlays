@@ -24,6 +24,7 @@ import org.zhbot.zmi_overlays.overlays.Infobox;
 import org.zhbot.zmi_overlays.overlays.SpellOverlays;
 import org.zhbot.zmi_overlays.overlays.WorldOverlays;
 import org.zhbot.zmi_overlays.utils.PouchUtils;
+import org.zhbot.zmi_overlays.utils.TextUtils;
 
 @Slf4j
 @PluginDescriptor(
@@ -54,6 +55,9 @@ public class ZMIOverlaysPlugin extends Plugin
 
 	@Inject
 	private PouchUtils pouchUtils;
+
+	@Inject
+	private TextUtils textUtils;
 
 	@Inject
 	private WorldOverlays worldOverlays;
@@ -153,12 +157,12 @@ public class ZMIOverlaysPlugin extends Plugin
 		var entries = menu.getMenuEntries();
 		for (var entry : entries)
 		{
-			var target = Text.removeTags(entry.getTarget());
+			var target = textUtils.Clean(entry.getTarget());
 			var pouch = Pouch.getByName(target);
 			if (pouch == null)
 				continue;
 
-			var option = Text.removeTags(entry.getOption());
+			var option = textUtils.Clean(entry.getOption());
 			switch (option)
 			{
 				case "Empty":
